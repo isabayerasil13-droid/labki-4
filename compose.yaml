@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: bank_lab4
+      POSTGRES_USER: bank
+      POSTGRES_PASSWORD: bank_local_demo
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - bank_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bank -d bank_lab4"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+volumes:
+  bank_data:

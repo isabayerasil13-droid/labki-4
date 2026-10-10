@@ -1,0 +1,308 @@
+{
+  "info": {
+    "name": "Лабки 4 — Банк JWT CRUD",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "username",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "access",
+      "value": ""
+    },
+    {
+      "key": "refresh",
+      "value": ""
+    },
+    {
+      "key": "client_id",
+      "value": ""
+    },
+    {
+      "key": "account_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/auth/token/",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if(pm.response.code===200){const t=pm.response.json();pm.collectionVariables.set(\"access\",t.access);pm.collectionVariables.set(\"refresh\",t.refresh);}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Create client",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/clients/",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"full_name\": \"Postman Учебный Клиент\",\n  \"iin\": \"000000000010\",\n  \"phone\": \"\",\n  \"email\": \"postman@example.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if(pm.response.code===201)pm.collectionVariables.set(\"client_id\",pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Get clients / query",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/clients/?search=Postman"
+      }
+    },
+    {
+      "name": "4. Get client",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/clients/{{client_id}}/"
+      }
+    },
+    {
+      "name": "5. Update client",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/clients/{{client_id}}/",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"full_name\": \"Postman Изменённый Клиент\",\n  \"iin\": \"000000000010\",\n  \"phone\": \"\",\n  \"email\": \"postman@example.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "6. Create account",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/accounts/",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"client\": \"{{client_id}}\",\n  \"number\": \"KZ000000000000000010\",\n  \"currency\": \"KZT\",\n  \"balance\": \"15000.50\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if(pm.response.code===201)pm.collectionVariables.set(\"account_id\",pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Get accounts / query",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/accounts/?client={{client_id}}&currency=KZT"
+      }
+    },
+    {
+      "name": "8. Get account",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/accounts/{{account_id}}/"
+      }
+    },
+    {
+      "name": "9. Update account",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/accounts/{{account_id}}/",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"client\": \"{{client_id}}\",\n  \"number\": \"KZ000000000000000010\",\n  \"currency\": \"KZT\",\n  \"balance\": \"20000.00\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10. Delete client (expected 409)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{base_url}}/api/clients/{{client_id}}/"
+      }
+    },
+    {
+      "name": "11. Delete account",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{base_url}}/api/accounts/{{account_id}}/"
+      }
+    },
+    {
+      "name": "12. Delete client",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{base_url}}/api/clients/{{client_id}}/"
+      }
+    },
+    {
+      "name": "13. Refresh",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/auth/refresh/",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refresh\": \"{{refresh}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if(pm.response.code===200){const t=pm.response.json();pm.collectionVariables.set(\"access\",t.access);pm.collectionVariables.set(\"refresh\",t.refresh);}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14. Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/auth/logout/",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refresh\": \"{{refresh}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
